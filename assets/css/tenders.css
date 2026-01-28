@@ -1,0 +1,217 @@
+:root {
+  --primary: #46B5D3;
+  --primary-dark: #0D0B63;
+  --bg-dark: #160C40;
+  --secondary-dark: #151B4D;
+  --white: #FFFFFF;
+  --gray-light: #E7DFDF;
+  --accent-light: #E1F3F3;
+  
+  --gradient-main: linear-gradient(135deg, var(--primary-dark), var(--bg-dark));
+  --glass-bg: rgba(22, 12, 64, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --shadow: 0 10px 30px rgba(0,0,0,0.5);
+  --text-main: var(--white);
+  --radius: 16px;
+}
+
+/* Light Mode Overrides using your colors */
+[data-theme="light"] {
+  --bg-dark: var(--gray-light);
+  --primary-dark: var(--white);
+  --glass-bg: var(--white);
+  --glass-border: var(--primary);
+  --text-main: var(--primary-dark);
+  --shadow: 0 10px 30px rgba(70, 181, 211, 0.2);
+}
+
+.all_tender_container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.main-title {
+  text-align: center;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 40px;
+}
+
+/* Company Card Styling */
+.company_card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 25px;
+  margin-bottom: 30px;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s ease;
+}
+
+.company_card:hover {
+  transform: translateY(-5px);
+}
+
+.company_header {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.company_header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--primary);
+}
+
+/* Table Design */
+.table_container {
+  overflow-x: auto; /* Responsive Scroll */
+  border-radius: 8px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  min-width: 800px; /* Ensures table doesn't squish too much */
+}
+
+th {
+  background: var(--primary);
+  color: var(--primary-dark);
+  padding: 12px;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+td {
+  padding: 12px;
+  border-bottom: 1px solid var(--glass-border);
+  font-size: 0.85rem;
+}
+
+tr:hover {
+  background: rgba(70, 181, 211, 0.1);
+}
+
+/* Theme Switcher UI */
+.theme-switch-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.theme-switch {
+  display: inline-block;
+  height: 34px;
+  position: relative;
+  width: 60px;
+}
+
+.theme-switch input { display:none; }
+
+.slider {
+  background-color: var(--secondary-dark);
+  bottom: 0;
+  cursor: pointer;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: .4s;
+  border-radius: 34px;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+}
+
+.slider:before {
+  background-color: var(--primary);
+  bottom: 4px;
+  content: "";
+  height: 26px;
+  left: 4px;
+  position: absolute;
+  transition: .4s;
+  width: 26px;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+input:checked + .slider { background-color: var(--primary); }
+input:checked + .slider:before { 
+    transform: translateX(26px); 
+    background-color: var(--white);
+}
+
+/* Scroll Animation Class */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease-out;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* --- Custom Scrollbar Styling --- */
+
+/* 1. The entire scrollbar width */
+::-webkit-scrollbar {
+    width: 10px;               /* Width for vertical scrollbar */
+    height: 10px;              /* Height for horizontal scrollbar */
+}
+
+/* 2. The Track (the background of the scrollbar) */
+::-webkit-scrollbar-track {
+    background: var(--bg-body); /* Matches your page background */
+    border-radius: 10px;
+}
+
+/* 3. The Thumb (the draggable part) */
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;       /* Light grey thumb */
+    border-radius: 10px;
+    border: 2px solid var(--bg-body); /* Creates a padding effect around the thumb */
+    transition: background 0.3s ease;
+}
+
+/* 4. Thumb hover effect */
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary); /* Changes to your primary blue on hover */
+}
+
+/* 5. Dark Mode specific scrollbar */
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: #475569;       /* Darker grey for dark mode */
+    border: 2px solid var(--bg-body);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background: var(--primary); /* Keep blue highlight in dark mode */
+}
+
+/* --- Firefox Support (Limited styling) --- */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+.activity-feed::-webkit-scrollbar {
+    width: 6px; /* Thinner scrollbar for small panels */
+}
+
+.activity-feed::-webkit-scrollbar-thumb {
+    background: var(--border);
+}

@@ -1,0 +1,321 @@
+/* company.css */
+
+:root {
+    /* -- Provided Color Palette -- */
+    --primary: #46B5D3;
+    --primary-dark: #0D0B63;
+    --bg-dark: #160C40;
+    --secondary-dark: #151B4D;
+    --white: #FFFFFF;
+    --gray-light: #E7DFDF;
+    --accent-light: #E1F3F3;
+    --you_access_icon: #4CAF50;
+    --you_not_access_icon: #F44336;
+
+    /* -- Gradients -- */
+    --gradient-main: linear-gradient(135deg, var(--primary-dark), var(--bg-dark));
+    --gradient-text: linear-gradient(90deg, var(--primary-dark), var(--secondary-dark));
+    --gradient-bar: linear-gradient(90deg, var(--primary), var(--secondary-dark));
+
+    /* -- Effects -- */
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(255, 255, 255, 0.4);
+    --neon-glow: 0 0 15px rgba(70, 181, 211, 0.5);
+    --shadow: 0 10px 25px rgba(0,0,0,0.1);
+    
+    /* -- Semantic Mapping (Default/Light) -- */
+    --app-bg: var(--accent-light);
+    --surface: var(--white);
+    --text-main: var(--secondary-dark);
+    --text-muted: var(--primary-dark);
+    --border-color: var(--gray-light);
+    --input-bg: var(--white);
+    --card-bg: var(--white);
+}
+
+/* -- Dark Mode Mapping -- */
+[data-theme="dark"] {
+    --app-bg: var(--bg-dark);
+    --background-image: var(--gradient-main);
+    --surface: rgba(22, 12, 64, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --text-main: var(--white);
+    --text-muted: var(--gray-light);
+    --border-color: rgba(255,255,255,0.1);
+    --input-bg: rgba(255,255,255,0.05);
+    --shadow: 0 10px 25px rgba(0,0,0,0.5);
+    --gradient-text: linear-gradient(90deg, var(--primary), var(--white));
+    --card-bg: rgba(255,255,255,0.05);
+}
+@import url(https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap);
+* { font-family: 'Rajdhani', sans-serif; }
+
+/* Main Container (Glassmorphism) */
+.main_container_company_add_and_list {
+    /* max-width: 900px; */
+    margin: 10px;
+    background: var(--surface);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 10px;
+    box-shadow: var(--shadow);
+    animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.main_container_company_add{
+    max-width: 600px;
+    margin: 20px auto;
+    background: var(--surface);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: var(--shadow);
+    animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.main_container_company_edit{
+    max-width: 700px;
+    margin: 20px auto;
+    background: var(--surface);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: var(--shadow);
+    animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+/* Animations */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes textShine {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+}
+
+/* Typography */
+h3, h4 {
+    margin-top: 0;
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 800;
+}
+
+h3 { font-size: 2rem; margin-bottom: 25px; }
+
+/* Header Row (Title + Toggle) */
+/* .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 15px;
+} */
+
+/* Theme Toggle Button */
+/* .theme-toggle {
+    background: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+} */
+
+/* .theme-toggle:hover {
+    background: var(--primary);
+    color: var(--white);
+    box-shadow: var(--neon-glow);
+} */
+
+/* Forms */
+form { margin-bottom: 20px; }
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+input[type="text"], textarea {
+    width: 100%;
+    padding: 12px 15px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    color: var(--text-main);
+    font-size: 1rem;
+    outline: none;
+    margin-bottom: 20px;
+}
+
+input:focus, textarea:focus {
+    border-color: var(--primary);
+    box-shadow: var(--neon-glow);
+}
+
+button[type="submit"], .btn-action {
+    background: var(--gradient-bar);
+    color: var(--white);
+    border: none;
+    padding: 12px 30px;
+    font-size: 1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    display: inline-block;
+    text-decoration: none;
+    box-shadow: var(--shadow);
+}
+
+button[type="submit"]:hover, .btn-action:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--neon-glow);
+}
+
+/* Company List Grid */
+.company-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.company-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.company-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--neon-glow);
+    border-color: var(--primary);
+}
+
+.company-card h4 {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+}
+
+.company-card p {
+    flex-grow: 1;
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-bottom: 15px;
+}
+
+.card-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--border-color);
+    padding-top: 15px;
+}
+
+.card-actions a {
+    text-decoration: none;
+    font-size: 0.85rem;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: all 0.2s;
+}
+
+.link-view { color: var(--primary); background: rgba(70, 181, 211, 0.1); }
+.link-edit { color: var(--you_access_icon); background: rgba(76, 175, 80, 0.1); }
+.link-delete { color: var(--you_not_access_icon); background: rgba(244, 67, 54, 0.1); }
+
+.card-actions a:hover {
+    filter: brightness(0.9);
+    transform: scale(1.05);
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 15px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+.back-link:hover { color: var(--primary); text-decoration: underline; }
+
+.message-success {
+    background: rgba(76,175,80,0.15);
+    color: var(--you_access_icon);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.message-error {
+    background: rgba(244,67,54,0.15);
+    color: var(--you_not_access_icon);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+/* --- Custom Scrollbar Styling --- */
+
+/* 1. The entire scrollbar width */
+::-webkit-scrollbar {
+    width: 10px;               /* Width for vertical scrollbar */
+    height: 10px;              /* Height for horizontal scrollbar */
+}
+
+/* 2. The Track (the background of the scrollbar) */
+::-webkit-scrollbar-track {
+    background: var(--bg-body); /* Matches your page background */
+    border-radius: 10px;
+}
+
+/* 3. The Thumb (the draggable part) */
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;       /* Light grey thumb */
+    border-radius: 10px;
+    border: 2px solid var(--bg-body); /* Creates a padding effect around the thumb */
+    transition: background 0.3s ease;
+}
+
+/* 4. Thumb hover effect */
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary); /* Changes to your primary blue on hover */
+}
+
+/* 5. Dark Mode specific scrollbar */
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: #475569;       /* Darker grey for dark mode */
+    border: 2px solid var(--bg-body);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background: var(--primary); /* Keep blue highlight in dark mode */
+}
+
+/* --- Firefox Support (Limited styling) --- */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+.activity-feed::-webkit-scrollbar {
+    width: 6px; /* Thinner scrollbar for small panels */
+}
+
+.activity-feed::-webkit-scrollbar-thumb {
+    background: var(--border);
+}

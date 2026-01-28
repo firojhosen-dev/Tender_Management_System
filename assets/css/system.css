@@ -1,0 +1,173 @@
+:root {
+  --primary: #46B5D3;
+  --primary-dark: #0D0B63;
+  --bg-dark: #160C40;
+  --secondary-dark: #151B4D;
+  --white: #FFFFFF;
+  --gray-light: #E7DFDF;
+  --accent-light: #E1F3F3;
+  --glass: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --radius: 14px;
+}
+
+/* ডার্ক মোড লজিক */
+body.light-theme {
+  --bg-dark: #f0f2f5;
+  --secondary-dark: #ffffff;
+  --white: #160C40;
+  --glass: rgba(0, 0, 0, 0.05);
+  --glass-border: rgba(0, 0, 0, 0.1);
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--white);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 20px;
+  transition: all 0.4s ease;
+}
+
+/* মেইন কন্টেইনার */
+.container {
+  max-width: 1100px;
+  margin: auto;
+}
+
+h2 {
+  color: var(--primary);
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+/* ট্যাব বাটন ডিজাইন */
+.tab-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 30px;
+  justify-content: center;
+}
+
+.tab-btn {
+  background: var(--secondary-dark);
+  color: var(--white);
+  border: 1px solid var(--glass-border);
+  padding: 10px 20px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.tab-btn.active {
+  background: var(--primary);
+  color: var(--primary-dark);
+  font-weight: bold;
+  box-shadow: 0 0 15px var(--primary);
+}
+
+/* ট্যাব কন্টেন্ট অ্যানিমেশন */
+[class^="tab_"] {
+  display: none;
+  background: var(--secondary-dark);
+  padding: 30px;
+  border-radius: var(--radius);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow);
+  animation: fadeIn 0.5s ease;
+}
+
+[class^="tab_"].active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* লিস্ট ডিজাইন */
+ul { list-style: none; padding: 0; }
+li {
+  padding: 12px;
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  justify-content: space-between;
+}
+
+li strong { color: var(--primary); }
+
+/* ডার্ক মোড টগল বাটন */
+.theme-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--primary);
+  border: none;
+  padding: 15px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+/* রেসপনসিভ */
+@media (max-width: 768px) {
+  li { flex-direction: column; gap: 5px; }
+  .tab-btn { width: 100%; }
+}
+
+
+/* --- Custom Scrollbar Styling --- */
+
+/* 1. The entire scrollbar width */
+::-webkit-scrollbar {
+    width: 10px;               /* Width for vertical scrollbar */
+    height: 10px;              /* Height for horizontal scrollbar */
+}
+
+/* 2. The Track (the background of the scrollbar) */
+::-webkit-scrollbar-track {
+    background: var(--bg-body); /* Matches your page background */
+    border-radius: 10px;
+}
+
+/* 3. The Thumb (the draggable part) */
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;       /* Light grey thumb */
+    border-radius: 10px;
+    border: 2px solid var(--bg-body); /* Creates a padding effect around the thumb */
+    transition: background 0.3s ease;
+}
+
+/* 4. Thumb hover effect */
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary); /* Changes to your primary blue on hover */
+}
+
+/* 5. Dark Mode specific scrollbar */
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: #475569;       /* Darker grey for dark mode */
+    border: 2px solid var(--bg-body);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background: var(--primary); /* Keep blue highlight in dark mode */
+}
+
+/* --- Firefox Support (Limited styling) --- */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+.activity-feed::-webkit-scrollbar {
+    width: 6px; /* Thinner scrollbar for small panels */
+}
+
+.activity-feed::-webkit-scrollbar-thumb {
+    background: var(--border);
+}

@@ -1,0 +1,174 @@
+:root {
+    --bg-color: #ffffff;
+    --text-color: #000000;
+    --border-color: #ffc107; /* Yellow from image */
+    --input-bg: #ffffff;
+    --global-bar-bg: #e0e0e0;
+    --bg-image: none;
+}
+
+.dark-theme {
+    --bg-color: #1a1a1a;
+    --text-color: #ffffff;
+    --input-bg: #333333;
+    --global-bar-bg: #444444;
+}
+@import url(https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap);
+
+body {
+    background-color: var(--bg-color);
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-attachment: fixed;
+    color: var(--text-color);
+    font-family: 'Rajdhani', sans-serif;
+    margin: 0;
+    /* padding: 20px; */
+    transition: all 0.3s ease;
+}
+
+.search-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* Advanced Search Row */
+.advanced-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.input-group {
+    text-align: left;
+    flex: 1;
+}
+
+.input-group label {
+    display: block;
+    font-size: 11px;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.input-group input, .input-group select {
+    width: 100%;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 8px;
+    background: var(--input-bg);
+    color: var(--text-color);
+}
+
+/* TMS Logo Styling */
+.logo-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 40px 0;
+}
+
+.tms-logo {
+    font-size: 120px;
+    margin: 0 20px;
+    font-weight: 900;
+}
+
+.eye-bg {
+    font-size: 150px;
+    opacity: 0.1;
+    position: absolute;
+    z-index: -1;
+}
+
+/* Global Search Bar */
+.global-bar {
+    display: flex;
+    align-items: center;
+    background: var(--global-bar-bg);
+    border: 3px solid var(--border-color);
+    border-radius: 50px;
+    max-width: 800px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.global-bar input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 15px 20px;
+    font-size: 24px;
+    outline: none;
+    color: var(--text-color);
+}
+
+.search-icon { font-size: 30px; padding-left: 20px; }
+
+.global-btn {
+    background: var(--border-color);
+    border: none;
+    padding: 0 30px;
+    font-size: 24px;
+    cursor: pointer;
+    height: 100%;
+}
+
+/* Controls */
+.controls { position: fixed; top: 10px; right: 10px; z-index: 100; }
+.upload-label { cursor: pointer; background: #ddd; padding: 5px; border-radius: 4px; color: #000; }
+#bg-upload { display: none; }
+
+
+/* --- Custom Scrollbar Styling --- */
+
+/* 1. The entire scrollbar width */
+::-webkit-scrollbar {
+    width: 10px;               /* Width for vertical scrollbar */
+    height: 10px;              /* Height for horizontal scrollbar */
+}
+
+/* 2. The Track (the background of the scrollbar) */
+::-webkit-scrollbar-track {
+    background: var(--bg-body); /* Matches your page background */
+    border-radius: 10px;
+}
+
+/* 3. The Thumb (the draggable part) */
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;       /* Light grey thumb */
+    border-radius: 10px;
+    border: 2px solid var(--bg-body); /* Creates a padding effect around the thumb */
+    transition: background 0.3s ease;
+}
+
+/* 4. Thumb hover effect */
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary); /* Changes to your primary blue on hover */
+}
+
+/* 5. Dark Mode specific scrollbar */
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: #475569;       /* Darker grey for dark mode */
+    border: 2px solid var(--bg-body);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background: var(--primary); /* Keep blue highlight in dark mode */
+}
+
+/* --- Firefox Support (Limited styling) --- */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+.activity-feed::-webkit-scrollbar {
+    width: 6px; /* Thinner scrollbar for small panels */
+}
+
+.activity-feed::-webkit-scrollbar-thumb {
+    background: var(--border);
+}

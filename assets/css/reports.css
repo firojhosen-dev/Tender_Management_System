@@ -1,0 +1,64 @@
+:root {
+    --primary: #2563eb;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --text: #1e293b;
+    --border: #e2e8f0;
+    --success: #22c55e;
+    --danger: #ef4444;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #0f172a;
+        --card: #1e293b;
+        --text: #f1f5f9;
+        --border: #334155;
+    }
+}
+
+body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+
+.report-container { max-width: 1200px; margin: 0 auto; animation: fadeIn 0.5s ease; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+
+.stat-card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+
+.stat-card h3 { margin: 0; font-size: 0.875rem; color: #64748b; }
+
+.stat-card p { margin: 10px 0 0; font-size: 1.5rem; font-weight: bold; }
+
+.filter-bar { background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end; border: 1px solid var(--border); }
+
+.filter-group { display: flex; flex-direction: column; gap: 5px; }
+
+.filter-group label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+
+select, input { padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--card); color: var(--text); }
+
+.btn { padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; transition: 0.2s; }
+
+.btn-primary { background: var(--primary); color: white; }
+
+.btn-export { background: #64748b; color: white; }
+
+.data-table-container { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+
+table { width: 100%; border-collapse: collapse; text-align: left; }
+
+th { background: rgba(0,0,0,0.02); padding: 15px; font-size: 0.875rem; border-bottom: 2px solid var(--border); }
+
+td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 0.875rem; }
+
+tr:hover { background: rgba(37, 99, 235, 0.05); }
+
+.chart-box { height: 200px; display: flex; align-items: flex-end; gap: 10px; padding-top: 20px; }
+
+.bar { background: var(--primary); min-width: 30px; border-radius: 4px 4px 0 0; position: relative; transition: height 1s ease-out; }
+
+.bar:hover::after { content: attr(data-value); position: absolute; top: -25px; left: 50%; transform: translateX(-50%); font-size: 12px; }
+
+@media print { .filter-bar, .btn { display: none; } body { background: white; color: black; } }

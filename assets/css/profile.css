@@ -1,0 +1,343 @@
+/* profile.css */
+
+:root {
+    /* -- Provided Color Palette -- */
+    --primary: #46B5D3;
+    --primary-dark: #0D0B63;
+    --bg-dark: #160C40;
+    --secondary-dark: #151B4D;
+    --white: #FFFFFF;
+    --gray-light: #E7DFDF;
+    --accent-light: #E1F3F3;
+    --you_access_icon: #4CAF50;
+    --you_not_access_icon: #F44336;
+
+    /* -- Gradients -- */
+    --gradient-main: linear-gradient(135deg, var(--primary-dark), var(--bg-dark));
+    --gradient-text: linear-gradient(90deg, var(--primary-dark), var(--secondary-dark)); /* Adjusted for Light Mode visibility */
+    --gradient-bar: linear-gradient(90deg, var(--primary), var(--accent-light));
+
+    /* -- Effects -- */
+    --glass-bg: rgba(255, 255, 255, 0.85); /* Light mode glass */
+    --glass-border: rgba(255, 255, 255, 0.4);
+    --neon-glow: 0 0 15px rgba(70, 181, 211, 0.5);
+    --shadow: 0 10px 25px rgba(0,0,0,0.1);
+    
+    /* -- Semantic Mapping (Default/Light) -- */
+    --app-bg: var(--accent-light);
+    --surface: var(--white);
+    --text-main: var(--secondary-dark);
+    --text-muted: var(--primary-dark);
+    --border-color: var(--gray-light);
+    --input-bg: var(--white);
+    --tab-inactive: var(--gray-light);
+}
+
+/* -- Dark Mode Mapping -- */
+[data-theme="dark"] {
+    --app-bg: var(--bg-dark); /* Fallback */
+    --background-image: var(--gradient-main); /* Use gradient for dark mode bg */
+    --surface: rgba(22, 12, 64, 0.7); /* Glass dark */
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --text-main: var(--white);
+    --text-muted: var(--gray-light);
+    --border-color: rgba(255,255,255,0.1);
+    --input-bg: rgba(255,255,255,0.05);
+    --shadow: 0 10px 25px rgba(0,0,0,0.5);
+    --gradient-text: linear-gradient(90deg, var(--primary), var(--white));
+    --tab-inactive: rgba(255,255,255,0.1);
+}
+@import url(https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap);
+
+/* Global Reset & Body */
+* {
+    box-sizing: border-box;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+body {
+    font-family: 'Rajdhani', sans-serif;
+    background: var(--app-bg);
+    background-image: var(--background-image, none);
+    background-size: cover;
+    background-attachment: fixed;
+    color: var(--text-main);
+    margin: 0;
+    /* padding: 20px; */
+    min-height: 100vh;
+}
+
+/* Main Container */
+.profile-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: var(--surface);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Header & Dark Mode Switch */
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+}
+
+h2 {
+    font-size: 2rem;
+    margin: 0;
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: textShine 3s infinite alternate;
+}
+
+@keyframes textShine {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+}
+
+/* Dark Mode Toggle Button */
+.theme-toggle {
+    background: var(--input-bg);
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    padding: 8px 15px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.theme-toggle:hover {
+    box-shadow: var(--neon-glow);
+    background: var(--primary);
+    color: var(--white);
+}
+
+/* Tabs Navigation */
+.tabs-nav {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.tab-btn {
+    padding: 12px 20px;
+    background: var(--tab-inactive);
+    border: none;
+    border-radius: 12px;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-weight: 600;
+    flex: 1;
+    min-width: 120px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.tab-btn:hover {
+    background: rgba(70, 181, 211, 0.2);
+    color: var(--primary);
+}
+
+.tab-btn.active {
+    background: var(--primary);
+    color: var(--white);
+    box-shadow: var(--neon-glow);
+    transform: translateY(-2px);
+}
+
+/* Tab Content & Animations */
+.tab-content {
+    display: none;
+    animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Form Styling */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 12px 15px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    color: var(--text-main);
+    font-size: 1rem;
+    outline: none;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: var(--primary);
+    box-shadow: var(--neon-glow);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Avatar Section */
+.avatar-section {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.avatar-preview {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 4px solid var(--primary);
+    object-fit: cover;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s;
+}
+
+.avatar-preview:hover {
+    transform: scale(1.05) rotate(3deg);
+}
+
+/* Action Buttons */
+.btn-save {
+    background: var(--gradient-bar);
+    color: var(--white);
+    border: none;
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    box-shadow: var(--shadow);
+}
+
+.btn-save:hover {
+    filter: brightness(1.1);
+    box-shadow: var(--neon-glow);
+    transform: scale(1.02);
+}
+
+/* Section Dividers */
+h3 {
+    color: var(--primary);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+    margin-top: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .tabs-nav {
+        flex-direction: column;
+        gap: 5px;
+    }
+    .header-row {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+    .theme-toggle {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+
+/* --- Custom Scrollbar Styling --- */
+
+/* 1. The entire scrollbar width */
+::-webkit-scrollbar {
+    width: 10px;               /* Width for vertical scrollbar */
+    height: 10px;              /* Height for horizontal scrollbar */
+}
+
+/* 2. The Track (the background of the scrollbar) */
+::-webkit-scrollbar-track {
+    background: var(--bg-body); /* Matches your page background */
+    border-radius: 10px;
+}
+
+/* 3. The Thumb (the draggable part) */
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;       /* Light grey thumb */
+    border-radius: 10px;
+    border: 2px solid var(--bg-body); /* Creates a padding effect around the thumb */
+    transition: background 0.3s ease;
+}
+
+/* 4. Thumb hover effect */
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary); /* Changes to your primary blue on hover */
+}
+
+/* 5. Dark Mode specific scrollbar */
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: #475569;       /* Darker grey for dark mode */
+    border: 2px solid var(--bg-body);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background: var(--primary); /* Keep blue highlight in dark mode */
+}
+
+/* --- Firefox Support (Limited styling) --- */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+.activity-feed::-webkit-scrollbar {
+    width: 6px; /* Thinner scrollbar for small panels */
+}
+
+.activity-feed::-webkit-scrollbar-thumb {
+    background: var(--border);
+}
