@@ -94,7 +94,6 @@ tender-management-system/
 │   │   ├── companies.css
 │   │   ├── tenders.css
 │   │   ├── search.css
-│   │   ├── includes.css
 │   │   ├── system.css
 │   │   ├── profile.css
 │   │   ├── includes.css
@@ -109,7 +108,6 @@ tender-management-system/
 │   │   ├── includes.js
 │   │   ├── system.js
 │   │   ├── profile.js
-│   │   ├── includes.js
 │   │   ├── reports.js 
 │       └── main.js
 ├── uploads/
@@ -319,5 +317,6 @@ For support or customization, contact:
 ⭐ Acknowledgement
 
 Developed with ❤️ for efficient tender handling and enterprise-grade management.
+
 
 
