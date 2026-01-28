@@ -80,7 +80,7 @@ This system helps organizations manage tenders, companies, vendors, users, docum
 ---
 
 ## 📂 Project Structure
-
+```
 tender-management-system/
 ├── config/
 │   ├── database.php
@@ -166,7 +166,7 @@ vendors/
 ├── you_not_access_this_page.php
 ├── index.php
 └── README.md
-
+```
 
 | File / Folder                       | Admin | Auditor | Reviewer | Tender Creator | Vendor | Notes                                             |
 | ----------------------------------- | ----- | ------- | -------- | -------------- | ------ | ------------------------------------------------- |
@@ -319,4 +319,5 @@ For support or customization, contact:
 ⭐ Acknowledgement
 
 Developed with ❤️ for efficient tender handling and enterprise-grade management.
+
 
