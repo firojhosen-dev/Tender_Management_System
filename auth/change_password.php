@@ -1,7 +1,7 @@
 <?php
 /*
 ==================================================
- Change Password
+ Change Passwordf
 --------------------------------------------------
  File: change_password.php
  Project: Tender Management System
