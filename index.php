@@ -1,18 +1,32 @@
 <?php
+
 /**
  * Tender Management System - Professional Landing Page
  * Full-Stack PHP Web Developer & UI/UX Designer implementation
  */
+require_once "config/database.php"; 
 
-// Simulated session and database values
-session_start();
-$isLoggedIn = isset($_SESSION['user_id']) ? true : false;
-$stats = [
-    'tenders' => 1250,
-    'vendors' => 8400,
-    'projects' => 920
-];
+// 1. Statistics for the "Key Metrics" section
+$tender_count = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total FROM tenders"))['total'] ?? 0;
+$company_count = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total FROM tender_companies"))['total'] ?? 0;
+$win_count = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total FROM tenders WHERE tender_result IN ('1st', '1-st')"))['total'] ?? 0;
 
+// 2. Companies with tender counts
+$companies_sql = "SELECT c.company_name, COUNT(t.id) as total_tenders 
+                  FROM tender_companies c 
+                  LEFT JOIN tenders t ON c.id = t.tender_company_id 
+                  GROUP BY c.id 
+                  ORDER BY total_tenders DESC";
+$companies_result = mysqli_query($conn, $companies_sql);
+
+//Just for the demo, we will fetch the 4 most recent tenders to display in the "Latest Tenders" section
+$recent_tenders_sql = "SELECT t.*, c.company_name 
+                       FROM tenders t 
+                       LEFT JOIN tender_companies c ON t.tender_company_id = c.id 
+                       ORDER BY t.id DESC LIMIT 4";
+$recent_tenders_result = mysqli_query($conn, $recent_tenders_sql);
+
+// Sample data for latest tenders
 $latestTenders = [
     ['title' => 'Smart City Infrastructure - Phase 2', 'deadline' => '2026-02-15', 'status' => 'Open'],
     ['title' => 'Renewable Energy Grid Expansion', 'deadline' => '2026-03-01', 'status' => 'Open'],
@@ -134,7 +148,7 @@ $demoSlides = [
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ProTender | Advanced Tender Management System</title>
-    <link rel="shortcut icon" href="/assets/image/system_logo.png" type="image/x-icon">
+    <link rel="shortcut icon" href="assets/image/system_logo.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
     @import url(https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap);
@@ -195,16 +209,81 @@ $demoSlides = [
         section { padding: 100px 0; }
 
         /* --- 1. ENHANCED HEADER --- */
-        header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            padding: 1.2rem 0;
-            transition: var(--transition);
-            background: rgba(13, 17, 23, 0); 
-        }
+.header-container {
+    display: flex;
+    justify-content: center; 
+    padding: 20px;
+    position: fixed;
+    top: 0px;  
+    left: 50%;    
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: auto; 
+}
 
+.navbar {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);          
+    padding: 10px 25px;
+    border-radius: 50px;                 
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    white-space: nowrap;                
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    font-weight: bold;
+}
+.logo img{
+    width: 70px;
+    height: 70px;
+    border: 3px dotted var(--primary);
+    border-radius: 50%;
+}
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links li a {
+    text-decoration: none;
+    color: #a0a0a0;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.nav-links li a:hover {
+    color: #fff;
+}
+@media (max-width: 895px) {
+    .nav-links{
+        display: none;
+    }
+    .header-container {
+        width: 90%; 
+        top: 10px;
+    }
+    .navbar {
+        padding: 10px 20px;
+    }
+}
+@media (max-width: 768px) {
+    .header-container {
+        width: 90%; 
+        top: 10px;
+    }
+    .navbar {
+        padding: 10px 20px;
+    }
+}
         header.scrolled {
             background: rgba(13, 17, 23, 0.7);
             backdrop-filter: blur(15px);
@@ -241,7 +320,7 @@ $demoSlides = [
             gap: 2.5rem;
             list-style: none;
             background: rgba(255,255,255,0.03);
-            padding: 0.5rem 2rem;
+            padding: 1rem;
             border-radius: 50px;
             border: 1px solid rgba(255,255,255,0.05);
         }
@@ -611,25 +690,64 @@ $demoSlides = [
             font-weight: bold;
         }
 
-        /* Statistics */
-        .stats-bar {
-            background: var(--bg-card);
-            padding: 4rem 0;
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
+        /* Stats Section */
+        .stat_container_main{
+            padding: 20px;
+            background: var(--bg);
         }
-
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+        .stat-card {
+            background: var(--bg);
+            padding: 30px;
+            border-radius: 15px;
             text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-bottom: 5px solid var(--primary);
+        }
+        .stat-card h2 { font-size: 100px;  color: var(--primary); }
+        .stat-card p { font-weight: bold; color: var(--secondary); text-transform: uppercase; }
+
+        /* All Companies Section */
+        .section-title { text-align: center; margin-bottom: 30px; color: var(--secondary); }
+        
+        .company-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
         }
 
-        .stat-item h3 {
-            font-size: 3rem;
-            color: var(--primary);
+        .company-pill {
+            /* background: var(--primary); */
+            border-top: 5px solid  #0D0B63;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-align: center;
+            transition: transform 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            cursor: pointer;
         }
+        .company-pill:hover { transform: scale(1.1); background: var(--primary-hover); }
+        .company-pill .name { font-size: 0.9rem; font-weight: 500; }
+        .company-pill .count { font-size: 0.7rem; opacity: 0.8; }
 
+        /* Responsive Mobile Settings */
+        @media (max-width: 600px) {
+            .stats-grid{
+            grid-template-columns: repeat(auto-fit, minmax(150px, 2fr));
+            }
+            .stat-card h2 { font-size: 7rem; }
+            .company-pill { padding: 8px 15px; }
+        }
         /* Tender Table */
         .tender-table-wrapper {
             overflow-x: auto;
@@ -668,19 +786,6 @@ $demoSlides = [
             text-align: center;
             border: 1px solid var(--border);
         }
-
-        /* Footer */
-        /* footer {
-            padding: 4rem 0 2rem;
-            border-top: 1px solid var(--border);
-            margin-top: 50px;
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 4rem;
-        } */
 
         /* --- Footer Styles --- */
         .footer {
@@ -919,6 +1024,9 @@ $demoSlides = [
 
         /* Responsive Design */
         @media (max-width: 1024px) {
+            .cta-box{
+                padding: 10px;
+            }
             .footer-content {
                 grid-template-columns: 1fr 1fr;
                 gap: 2rem;
@@ -1016,46 +1124,212 @@ $demoSlides = [
         @media (max-width: 768px) {
             .nav-links, .nav-auth { display: none; }
             .hamburger { display: block; }
-            .stats-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .stats-grid { grid-template-columns: 2fr; gap: 2rem; }
             .steps { flex-direction: column; gap: 3rem; }
             .slider-controls { padding: 0 1.5rem; }
             .carousel-container { height: 450px; }
             .slide-content h3 { font-size: 1.5rem; }
         }
+/* about section style start */
+
+        /* --- CSS VARIABLES (Strictly as requested) --- */
+        :root {
+            --bg-dark: #0d1117;
+            --bg-card: #161b22;
+            --primary: #2f81f7;
+            --primary-hover: #58a6ff;
+            --primary-glow: rgba(47, 129, 247, 0.4);
+            --text-main: #f0f6fc;
+            --text-muted: #8b949e;
+            --accent: #238636;
+            --border: #30363d;
+            --font-stack: 'Rajdhani', sans-serif;
+        }
+
+        p {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* --- LAYOUT UTILITIES --- */
+        .about_container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .about_section_main {
+            padding: 4rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .about_section_main:last-child {
+            border-bottom: none;
+        }
+
+        .grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+
+        /* --- ANIMATIONS --- */
+        .about_reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+
+        .about_reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- HERO SECTION --- */
+        .about_hero {
+            text-align: center;
+            padding: 6rem 20px;
+            background: radial-gradient(circle at top center, #1f293a 0%, var(--bg-dark) 70%);
+        }
+
+        .about_hero h1 {
+            font-size: 3rem;
+            background: linear-gradient(120deg, var(--text-main), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+        }
+
+        .about_hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* --- CARDS DESIGN --- */
+        .about_card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .about_card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px -10px var(--primary-glow);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .about_card h3 {
+            color: var(--primary-hover);
+        }
+
+        /* --- MISSION & OBJECTIVES --- */
+        .mission-box {
+            border-left: 4px solid var(--accent);
+        }
+
+        .obj-list li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .obj-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        /* --- TECH STACK BADGES --- */
+        .tech-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .badge {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--primary-hover);
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        .badge:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        /* --- FOOTER CTA --- */
+        .about_cta_section {
+            text-align: center;
+            background: linear-gradient(180deg, var(--bg-dark) 0%, #101620 100%);
+        }
+        /* --- RESPONSIVE ADJUSTMENTS --- */
+        @media (max-width: 992px) {
+            .grid-3 { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .about_hero h1 { font-size: 2.2rem; }
+        }
+/* about section style end */
     </style>
 </head>
 <body>
 
-    <header id="header">
-        <div class="container nav">
-            <!-- <a href="#" class="logo">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                ProTender
-            </a> -->
-            <ul class="nav-links" style="text-align: center;">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#demo">System Demo</a></li>
-                <li><a href="#tenders">Tenders</a></li>
-                <li><a href="#how">How It Works</a></li>
-                <li><a href="#about">About</a></li>
-            </ul>
-            <!-- <div class="nav-auth">
-                <?php if ($isLoggedIn): ?>
-                    <a href="/dashboard" class="btn btn-primary">Dashboard</a>
-                <?php else: ?>
-                    <a href="/login" class="nav-links" style="background:none; border:none; padding:0;">Login</a>
-                    <a href="/register" class="btn btn-primary">Get Started</a>
-                <?php endif; ?>
-            </div> -->
-            <button class="hamburger">☰</button>
+    <header class="header-container">
+    <nav class="navbar">
+        <div class="logo">
+            <img src="assets/image/logo.png" alt="TMS">
+            <spa style="font-size: 50px; color:#4361ee;">T<span style="color: #238636;">M</span><span style="color: #f1c40f;">S</span></spa>
         </div>
-    </header>
-
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#demo">System Demo</a></li>
+            <li><a href="#recent_tenders">Tenders</a></li>
+            <li><a href="#company_list">Company List</a></li>
+            <li><a href="#how">How It Works</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#start_now">Start Now</a></li>
+            <li><a href="auth/login.php">Login</a></li>
+        </ul>
+            <button class="hamburger">☰</button>
+    </nav>
+</header>
     <section class="hero" id="home">
         <div class="hero-bg"></div>
         <div class="container">
             <div class="hero-content">
-                <h1 class="reveal gradient-text">Modernizing Public Procurement for the Digital Age.</h1>
+                <h1 class="reveal gradient-text" style="margin-top: 50px;">Modernizing Public Procurement for the Digital Age.</h1>
                 <p class="reveal" style="transition-delay: 0.2s;">Secure, transparent, and efficient tender management for government organizations and private enterprises worldwide.</p>
                 <div class="reveal" style="transition-delay: 0.4s; display: flex; gap: 1rem; justify-content: center;">
                     <a href="system/documentation.php" class="btn btn-primary">View Documentation</a>
@@ -1099,82 +1373,224 @@ $demoSlides = [
             </div>
         </div>
     </section>
-    <div class="stats-bar">
-        <div class="container stats-grid">
-            <div class="stat-item">
-                <h3 class="counter" data-target="<?= $stats['tenders'] ?>">0</h3>
-                <p>Live Tenders</p>
-            </div>
-            <div class="stat-item">
-                <h3 class="counter" data-target="<?= $stats['vendors'] ?>">0</h3>
-                <p>Trusted Vendors</p>
-            </div>
-            <div class="stat-item">
-                <h3 class="counter" data-target="<?= $stats['projects'] ?>">0</h3>
-                <p>Awarded Projects</p>
-            </div>
+<!-- Stat Section -->
+<div class="stat_container_main">
+    <div class="stats-grid">
+        <div class="stat-card">
+            <p>Total Tenders</p>
+            <h2 class="count-up" data-target="<?php echo $tender_count; ?>">0</h2>
+        </div>
+        <div class="stat-card" style="border-bottom-color: var(--secondary);">
+            <p>Total Companies</p>
+            <h2 class="count-up" data-target="<?php echo $company_count; ?>">0</h2>
+        </div>
+        <div class="stat-card" style="border-bottom-color: var(--accent);">
+            <p>Total Wins (1st)</p>
+            <h2 class="count-up" data-target="<?php echo $win_count; ?>">0</h2>
         </div>
     </div>
-
+<section id="company_list">
+<!-- Company Section -->
+    <h1 class="section-title">All Companies</h1>
+    <div class="company-container">
+        <?php while($row = mysqli_fetch_assoc($companies_result)): 
+            $extra_size = min($row['total_tenders'] * 2, 50); 
+            $font_scale = 1 + ($row['total_tenders'] * 0.02);
+        ?>
+            <div class="company-pill">
+                <span class="name"><?php echo htmlspecialchars($row['company_name']); ?></span>
+                <span class="count">Tenders: <?php echo $row['total_tenders']; ?></span>
+            </div>
+        <?php endwhile; ?>
+    </div>
+</div>
+</section>
     <section id="about">
-        <div class="container">
-            <div style="text-align: center; max-width: 600px; margin: 0 auto 4rem;">
-                <h2 class="reveal">Built for Transparency & Security</h2>
-                <p class="reveal" style="color: var(--text-muted)">Our platform ensures every step of the procurement process is logged, verifiable, and secure.</p>
+    <section class="about_hero">
+        <div class="about_container about_reveal">
+            <h1>Tender Management System <span style="color: #2f81f7;">About</span></h1>
+            <p>
+                A comprehensive, secure, and scalable web-based application designed to streamline the entire tender lifecycle. We digitize and automate creation, evaluation, and approval processes to ensure transparency and efficiency.
+            </p>
+        </div>
+    </section>
+
+    <section class="about_section_main">
+        <div class="about_container grid grid-2">
+            <div class="about_card mission-box about_reveal">
+                <span class="card-icon">🎯</span>
+                <h3>Our Mission</h3>
+                <p>To provide organizations with a reliable and intelligent platform that simplifies tender operations, improves decision-making, and ensures fair competition among vendors. TMS aims to enhance operational efficiency while maintaining transparency and accountability in procurement processes.</p>
             </div>
+            <div class="about_card about_reveal">
+                <span class="card-icon">🚀</span>
+                <h3>Key Objectives</h3>
+                <ul class="obj-list">
+                    <li>Digitize the end-to-end tender management workflow</li>
+                    <li>Ensure role-based access and data security</li>
+                    <li>Improve collaboration between admins, auditors, and vendors</li>
+                    <li>Maintain accurate records and audit trails</li>
+                    <li>Reduce processing time and operational cost</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="about_section_main">
+        <div class="about_container">
+            <h2 style="text-align: center; margin-bottom: 3rem;" class="about_reveal">🔑 Core Features Overview</h2>
+            <div class="grid grid-3">
+                <div class="about_card about_reveal">
+                    <h3>Secure Access</h3>
+                    <p>Robust user authentication and granular role-based access control to ensure the right people have the right data.</p>
+                </div>
+                <div class="about_card about_reveal">
+                    <h3>Workflow Automation</h3>
+                    <p>Complete company and tender management with built-in approval workflows to eliminate manual bottlenecks.</p>
+                </div>
+                <div class="about_card about_reveal">
+                    <h3>Vendor Hub</h3>
+                    <p>Streamlined vendor registration, verification, and performance tracking in a single centralized portal.</p>
+                </div>
+                <div class="about_card revabout_revealeal">
+                    <h3>Evaluation System</h3>
+                    <p>Structured review, evaluation, and approval systems to ensure fair and competitive bidding processes.</p>
+                </div>
+                <div class="about_card about_reveal">
+                    <h3>Support & Tickets</h3>
+                    <p>Integrated support ticket system and process management to handle inquiries and issues efficiently.</p>
+                </div>
+                <div class="about_card about_reveal">
+                    <h3>Analytics</h3>
+                    <p>Real-time dashboards and reporting tools offering deep insights into procurement performance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about_section_main" style="background-color: #0f131a;">
+        <div class="about_container grid grid-2">
+            <div class="about_reveal">
+                <h2>🧠 System Design Philosophy</h2>
+                <p>TMS is designed with a user-centric approach, focusing on clarity, simplicity, and performance. The system follows modular architecture principles, allowing each module—tenders, vendors, users, reports—to function independently while remaining seamlessly connected.</p>
+                <p>The interface is modern, responsive, and optimized for daily office use, ensuring smooth navigation even for non-technical users.</p>
+            </div>
+            <div class="about_card about_reveal" style="border-color: var(--primary-glow);">
+                <h2>🔐 Security & Compliance</h2>
+                <p>Security is our core priority. We ensure sensitive procurement data remains protected via:</p>
+                <ul class="obj-list">
+                    <li>Role-based access control</li>
+                    <li>Secure session management</li>
+                    <li>Activity logging & audit readiness</li>
+                    <li>Controlled data modification permissions</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="about_section_main">
+        <div class="about_container grid grid-2">
+            <div class="about_card about_reveal">
+                <span class="card-icon">📊</span>
+                <h3>Transparency & Accountability</h3>
+                <p>TMS promotes transparency by maintaining a complete digital record of every tender action—from creation to final approval. All activities are traceable, ensuring accountability and simplifying internal audits.</p>
+            </div>
+            <div class="about_card about_reveal">
+                <span class="card-icon">🌱</span>
+                <h3>Scalability & Growth</h3>
+                <p>Built to scale with your organization. New modules, integrations, document management features, and analytics dashboards can be added without disrupting existing workflows.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="about_section_main">
+        <div class="about_container" style="text-align: center;">
+            <h2 class="about_reveal">🛠 Technology Stack</h2>
+            <p class="about_reveal">Built on a robust, modern foundation for performance and reliability.</p>
+            <div class="tech-wrapper about_reveal">
+                <span class="badge">HTML5</span>
+                <span class="badge">CSS3</span>
+                <span class="badge">JavaScript</span>
+                <span class="badge">PHP</span>
+                <span class="badge">MySQL</span>
+                <span class="badge">Apache</span>
+                <span class="badge">Modular Architecture</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="about_cta_section">
+        <div class="about_container about_reveal">
+            <h2>💼 Who Can Use This System?</h2>
+            <p style="margin-bottom: 2rem;">Government & Private Organizations • Procurement Committees • Enterprises • Educational Projects</p>
             
-            <div class="features-grid">
-                <div class="card reveal">
-                    <div class="card-icon">🔒</div>
-                    <h3>Secure Publishing</h3>
-                    <p>Encrypted document handling and secure submission vaults for all bids.</p>
-                </div>
-                <div class="card reveal" style="transition-delay: 0.1s;">
-                    <div class="card-icon">⚡</div>
-                    <h3>Real-time Alerts</h3>
-                    <p>Instant notifications for tender amendments, queries, and award results.</p>
-                </div>
-                <div class="card reveal" style="transition-delay: 0.2s;">
-                    <div class="card-icon">📊</div>
-                    <h3>Smart Evaluation</h3>
-                    <p>Automated scoring and compliance checks to speed up the selection process.</p>
-                </div>
-            </div>
-            <button class="btn btn-primary" style="margin-top: 10px; align-items: center;"><a href="system/about.php" style="text-decoration: none;">Learn More</a></button>
-        </div>
-    </section>
-
-    <section id="tenders">
-        <div class="container">
-            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem;">
-                <h2 class="reveal">Active Opportunities</h2>
-                <a href="/tenders" style="color: var(--primary); text-decoration: none;">Browse all →</a>
-            </div>
-            <div class="tender-table-wrapper reveal">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Tender Description</th>
-                            <th>Closing Date</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach($latestTenders as $t): ?>
-                        <tr>
-                            <td><strong><?= $t['title'] ?></strong></td>
-                            <td><?= date('M d, Y', strtotime($t['deadline'])) ?></td>
-                            <td><span class="status-badge"><?= $t['status'] ?></span></td>
-                            <td><a href="#" class="btn-outline btn" style="padding: 0.4rem 1rem; font-size: 0.8rem;">Details</a></td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+            <div style="background: var(--bg-card); padding: 2rem; border-radius: 12px; border: 1px solid var(--border); display: inline-block; text-align: left; max-width: 700px;">
+                <h3 style="color: var(--text-main);">🌐 Conclusion</h3>
+                <p style="margin-bottom: 0;">The Tender Management System is more than just a software solution—it is a complete digital framework for managing tenders with confidence, transparency, and efficiency. Modernize your procurement operations today.</p>
             </div>
         </div>
     </section>
 
+    </section>
+<!-- Recent Tender Section -->
+<section id="recent_tenders">
+<div class="recent-tenders-section" style="margin-top: 60px;">
+    <h1 class="section-title">Recently Added Tenders</h1>
+    
+    <div class="table-responsive" style="overflow-x: auto; background: #0000007a; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+        <table style="width: 100%; border-collapse: collapse; min-width: 1100px;">
+            <thead>
+                <tr style="background-color: var(--primary); color: #fff; text-align: left;">
+                    <th style="padding: 12px; color: #fff;">S/L</th>
+                    <th style="padding: 12px; color: #fff;">Company Name</th>
+                    <th style="padding: 12px; color: #fff;">Tender Name</th>
+                    <th style="padding: 12px; color: #fff;">Ref No</th>
+                    <th style="padding: 12px; color: #fff;">Published Date</th>
+                    <th style="padding: 12px; color: #fff;">Status</th>
+                    <th style="padding: 12px; color: #fff;">Quoted Price</th>
+                    <th style="padding: 12px; color: #fff;">Result</th>
+                    <th style="padding: 12px; color: #fff;">Brand</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php 
+                $sl = 1;
+                while($row = mysqli_fetch_assoc($recent_tenders_result)): ?>
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 10px;"><?php echo $sl++; ?></td>
+                    <td style="padding: 10px; color: var(--secondary); font-weight: bold;">
+                        <?php echo htmlspecialchars($row['company_name'] ?? 'N/A'); ?>
+                    </td>
+                    <td style="padding: 10px; font-weight: 500;"><?php echo htmlspecialchars($row['tender_name']); ?></td>
+                    <td style="padding: 10px; font-size: 0.9rem;"><?php echo htmlspecialchars($row['tender_ref_no']); ?></td>
+                    <td style="padding: 10px;"><?php echo $row['submitted_date']; ?></td>
+                    <td style="padding: 10px;">
+                        <span style="padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; background: <?php echo ($row['tender_status'] == 'Submitted') ? '#e8f5e9; color: #2e7d32;' : '#ffebee; color: #c62828;'; ?>">
+                            <?php echo $row['tender_status']; ?>
+                        </span>
+                    </td>
+                    <td style="padding: 10px; font-weight: bold;">
+                        <?php echo number_format($row['quoted_price'], 2) . " " . ($row['currency'] ?: 'BDT'); ?>
+                    </td>
+                    <td style="padding: 10px;">
+                        <?php if($row['tender_result'] == '1st' || $row['tender_result'] == '1-st'): ?>
+                            <span style="background: var(--accent); color: #000; padding: 2px 8px; border-radius: 5px; font-weight: bold;">1st</span>
+                        <?php else: ?>
+                            <?php echo $row['tender_result']; ?>
+                        <?php endif; ?>
+                    </td>
+                    <td style="padding: 10px;"><?php echo htmlspecialchars($row['brand']); ?></td>
+                </tr>
+                <?php endwhile; ?>
+            </tbody>
+        </table>
+    </div>
+
+    <div style="text-align: center; margin-top: 30px; margin-bottom: 50px;">
+        <a href="auth/login.php" style="display: inline-block; padding: 12px 30px; background: var(--primary); color: white; border-radius: 50px; text-decoration: none; font-weight: bold;">View More Tenders</a>
+    </div>
+</div>
+</section>
     <section id="how">
         <div class="container">
             <h2 class="reveal" style="text-align: center; margin-bottom: 4rem;">Simple Procurement Flow</h2>
@@ -1203,7 +1619,7 @@ $demoSlides = [
         </div>
     </section>
 
-    <section>
+    <section id="start_now">
         <div class="container">
             <div class="cta-box reveal">
                 <h2 style="font-size: 2.5rem; margin-bottom: 1.5rem;">Ready to start bidding?</h2>
@@ -1214,9 +1630,12 @@ $demoSlides = [
                 <div style="display: flex; gap: 1rem; justify-content: center;">
                     <a href="contact/admin_contact.php" class="btn btn-outline">Contact Admin</a>
                     <a href="auth/login.php" class="btn btn-primary">Login</a>
-                    <a href="users/request_user_add.php" class="btn btn-primary">Request Register</a>
-                    <a href="contact/request_access.php" class="btn btn-outline">Request Access</a>
+                    
                 </div>
+                <div class="button_request" style="display: flex; margin-top:10px; gap: 1rem; justify-content: center;">
+                        <a href="users/request_user_add.php" class="btn btn-primary">Request Register</a>
+                    <a href="contact/request_access.php" class="btn btn-outline">Request Access</a>
+                    </div>
             </div>
         </div>
     </section>
@@ -1225,33 +1644,35 @@ $demoSlides = [
         <div class="footer-container">
             <div class="footer-content">
                 <div class="footer-brand">
-                    <h2>T<span>MS</span></h2>
+                    <h2> <img src="assets/image/logo.png" alt="Logo" style="width: 50px; height:50px; border: 2px dotted #1602ef; border-radius: 50%;"><spa style="font-size: 50px; color:#4361ee;">T<span style="color: #238636;">M</span><span style="color: #f1c40f;">S</span></spa></h2>
                     <p>Secure, transparent, and efficient tender management for government organizations and private enterprises worldwide.</p>
                     <div class="social-links">
                         <a href="#" class="social-link" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
                         <a href="#" class="social-link" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
                         <a href="#" class="social-link" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
                         <a href="#" class="social-link" aria-label="Discord"><i class="fa-brands fa-discord"></i></a>
+                        
                     </div>
                 </div>
 
                 <div class="footer-section">
-                    <h3>Company</h3>
+                    <h3>Quick Access</h3>
                     <ul class="footer-links">
-                        <li class="footer_li"><a href="system/about.php" class="footer_a">About Us</a></li><br>
-                        <li class="footer_li"><a href="#" class="footer_a">Careers</a></li><br>
-                        <li class="footer_li"><a href="#" class="footer_a">Our Team</a></li><br>
-                        <li class="footer_li"><a href="#" class="footer_a">Roadmap</a></li><br>
+                        <li class="footer_li"><a href="#home" class="footer_a">Home</a></li> <br>
+                        <li class="footer_li"><a href="#demo" class="footer_a">System Demo</a></li><br>
+                        <li class="footer_li"><a href="#recent_tenders" class="footer_a">Tenders</a></li><br>
+                        <li class="footer_li"><a href="#company_list" class="footer_a">Company List</a></li><br>
                     </ul>
                 </div>
 
                 <div class="footer-section">
-                    <h3>Resources</h3>
+                    <h3>Quick Access</h3>
                     <ul class="footer-links">
                         <li class="footer_li"><a href="system/documentation.php" class="footer_a">Documentation</a></li><br>
-                        <li class="footer_li"><a href="#" class="footer_a">API Reference</a></li><br>
-                        <li class="footer_li"><a href="#" class="footer_a">Community Forum</a></li><br>
-                        <li class="footer_li"><a href="#" class="footer_a">Blog Posts</a></li><br>
+                        <li class="footer_li"><a href="#how" class="footer_a">How It Works</a></li><br>
+                        <li class="footer_li"><a href="#about" class="footer_a">About</a></li><br>
+                        <li class="footer_li"><a href="#start_now" class="footer_a">Start Now</a></li><br>
+                        <li class="footer_li"><a href="auth/login.php" class="footer_a">Login</a></li><br>
                     </ul>
                 </div>
 
@@ -1271,7 +1692,7 @@ $demoSlides = [
 
             <div class="footer-bottom">
                 <div class="copyright">
-                    &copy; <span id="year"></span> TMS  All rights reserved.
+                    &copy; 2025-<span id="year"></span> TMS  All rights reserved.
                 </div>
                 <div class="legal-links">
                     <!-- <a href="system/cookie_settings.php">Cookie Settings</a> -->
@@ -1316,34 +1737,26 @@ $demoSlides = [
 
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-        // Animated Counters
-        const counters = document.querySelectorAll('.counter');
-        const speed = 200;
+// Count Animations
+document.addEventListener("DOMContentLoaded", () => {
+            const counters = document.querySelectorAll('.count-up');
+            counters.forEach(counter => {
+                const updateCount = () => {
+                    const target = +counter.getAttribute('data-target');
+                    const count = +counter.innerText;
+                    const speed = 100; // Animation speed
+                    const increment = target / speed;
 
-        const startCounters = (entries, obs) => {
-            entries.forEach(entry => {
-                if(entry.isIntersecting) {
-                    const countIt = (counter) => {
-                        const target = +counter.getAttribute('data-target');
-                        const count = +counter.innerText;
-                        const inc = target / speed;
-
-                        if (count < target) {
-                            counter.innerText = Math.ceil(count + inc);
-                            setTimeout(() => countIt(counter), 1);
-                        } else {
-                            counter.innerText = target.toLocaleString();
-                        }
+                    if (count < target) {
+                        counter.innerText = Math.ceil(count + increment);
+                        setTimeout(updateCount, 20);
+                    } else {
+                        counter.innerText = target;
                     }
-                    countIt(entry.target);
-                    obs.unobserve(entry.target);
-                }
+                };
+                updateCount();
             });
-        }
-
-        const statsObserver = new IntersectionObserver(startCounters, {threshold: 1.0});
-        counters.forEach(c => statsObserver.observe(c));
-
+        });
         // --- NEW SLIDER LOGIC ---
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
@@ -1425,6 +1838,29 @@ $demoSlides = [
             newsletterBtn.style.setProperty('--x', x + 'px');
             newsletterBtn.style.setProperty('--y', y + 'px');
         });
+
+        // About Section Start
+ document.addEventListener('DOMContentLoaded', () => {
+            const reveals = document.querySelectorAll('.about_reveal');
+
+            const revealOnScroll = () => {
+                const windowHeight = window.innerHeight;
+                const elementVisible = 100;
+
+                reveals.forEach((about_reveal) => {
+                    const elementTop = about_reveal.getBoundingClientRect().top;
+                    if (elementTop < windowHeight - elementVisible) {
+                        about_reveal.classList.add('active');
+                    }
+                });
+            };
+
+            window.addEventListener('scroll', revealOnScroll);
+            // Trigger once on load
+            revealOnScroll();
+        });
+
+        // About Section End
     </script>
 </body>
 </html>
